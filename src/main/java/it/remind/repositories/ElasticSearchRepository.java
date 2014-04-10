@@ -26,6 +26,7 @@ import org.elasticsearch.common.Base64;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -129,8 +130,8 @@ public class ElasticSearchRepository {
 		return encoding.decode(ByteBuffer.wrap(encoded)).toString();
 	}
 
-	public WebSite searchText(final String text) {
-		WebSite webSite = new WebSite();
+	public List<WebSite> searchText(final String text) {
+		List<WebSite> websites = new ArrayList<>();
 		SearchResponse searchResponse = client.prepareSearch("blog")
 				.setTypes("site")
 				.setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
@@ -138,13 +139,17 @@ public class ElasticSearchRepository {
 				.setFrom(0).setSize(60).setExplain(true).execute().actionGet();
 		LOGGER.debug("Getting {} results for the text {}", searchResponse
 				.getHits().getTotalHits(), text);
-		SearchHit hit = searchResponse.getHits().getAt(0);
+		SearchHits hits = searchResponse.getHits();
+		for (SearchHit hit : hits) {
+			GetResponse getResponse = client
+					.prepareGet("blog", "site", hit.getId()).execute()
+					.actionGet();
+			String url = (String) getResponse.getSource().get("url");
+			WebSite webSite = new WebSite();
+			webSite.setUrl(url);
+			websites.add(webSite);
+		}
 
-		GetResponse getResponse = client
-				.prepareGet("blog", "site", hit.getId()).execute().actionGet();
-		String url = (String) getResponse.getSource().get("url");
-		webSite.setUrl(url);
-
-		return webSite;
+		return websites;
 	}
 }

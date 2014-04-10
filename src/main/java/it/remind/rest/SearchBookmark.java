@@ -2,6 +2,9 @@ package it.remind.rest;
 
 import it.remind.domain.WebSite;
 import it.remind.repositories.ElasticSearchRepository;
+
+import java.util.List;
+
 import restx.annotations.GET;
 import restx.annotations.RestxResource;
 import restx.factory.Component;
@@ -19,8 +22,9 @@ public class SearchBookmark {
     }
 
     @GET("/search")
-    public WebSite searchText(final String text) {
-        return elasticSearchRepository.searchText(text);
+    public List<WebSite> searchText(final String text) {
+        List<WebSite> sites = elasticSearchRepository.searchText(text);
+        return sites;
     }
 
 }
