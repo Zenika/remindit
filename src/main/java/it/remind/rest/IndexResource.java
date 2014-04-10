@@ -7,6 +7,7 @@ import it.remind.repositories.ElasticSearchRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import restx.annotations.DELETE;
 import restx.annotations.PUT;
 import restx.annotations.RestxResource;
 import restx.factory.Component;
@@ -33,4 +34,16 @@ public class IndexResource {
         return "test";
     }
 
+	@PUT("/index/{resourceId}/tag/{tag}")
+	@RolesAllowed(Roles.HELLO_ROLE)
+	public Boolean addTag(String resourceId, String tag) {
+		elasticSearchRepository.addTagToResource(resourceId, tag);
+		return true;
+	}
+	@DELETE("/index/{resourceId}/tag/{tag}")
+	@RolesAllowed(Roles.HELLO_ROLE)
+	public Boolean removeTag(String resourceId, String tag) {
+		elasticSearchRepository.removeTagToResource(resourceId, tag);
+		return true;
+	}
 }
