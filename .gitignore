@@ -4,3 +4,14 @@
 *.jar
 *.war
 *.ear
+
+.idea
+
+*.iml
+
+
+logs
+
+.vagrant
+
+data/elasticsearch
