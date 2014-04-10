@@ -75,3 +75,7 @@ Utilise l'extension Chrome Sense pour tester les requêtes
        }
     }
 
+
+## Lancement de l'application
+
+Lancer le main de it.remind.AppServer
