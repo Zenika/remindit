@@ -1,0 +1,481 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0097)http://blog.zenika.com/index.php?post/2013/04/29/integrer-elasticsearch-dans-une-application-Java -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <meta name="MSSmartTagsPreventParsing" content="TRUE">
+  <meta name="ROBOTS" content="INDEX, FOLLOW">
+  
+  <title>Intégrer ElasticSearch dans une application Java - Zenika</title>
+  <meta name="description" lang="fr" content="Ca y est, c&#39;est décidé, nous allons utiliser ElasticSearch comme moteur de recherche dans notre application Java. J&#39;ai suivi la formation Zenika, j&#39;ai installé mon premier cluster">
+  <meta name="copyright" content="Copyright Zenika, all rights reserved">
+  <meta name="author" content="Gérald Quintana">
+  <meta name="date" scheme="W3CDTF" content="2013-04-29T10:00:00+02:00">
+  
+  <link rel="schema.dc" href="http://purl.org/dc/elements/1.1/">
+  <meta name="dc.title" content="Intégrer ElasticSearch dans une application Java">
+  <meta name="dc.description" lang="fr" content="Ca y est, c&#39;est décidé, nous allons utiliser ElasticSearch comme moteur de recherche dans notre application Java. J&#39;ai suivi la formation Zenika, j&#39;ai installé mon premier cluster">
+  <meta name="dc.creator" content="Gérald Quintana">
+  <meta name="dc.language" content="fr">
+  <meta name="dc.publisher" content="Zenika">
+  <meta name="dc.rights" content="Copyright Zenika, all rights reserved">
+  <meta name="dc.date" scheme="W3CDTF" content="2013-04-29T10:00:00+02:00">
+  <meta name="dc.type" content="text">
+  <meta name="dc.format" content="text/html">
+  
+  <link rel="top" href="http://blog.zenika.com/index.php?" title="Accueil">
+  <link rel="contents" href="http://blog.zenika.com/index.php?archive" title="Archives">
+  
+  <link rel="next" href="http://blog.zenika.com/index.php?post/2013/05/22/AngularJS-%3A-Getting-Started" title="AngularJS : Getting Started">
+  
+  <link rel="previous" href="http://blog.zenika.com/index.php?post/2013/04/12/c-est-l-orgie-chez-les-fourmis" title="C&#39;est l&#39;orgie chez les fourmis">
+  
+  <link rel="alternate" type="application/atom+xml" title="Atom 1.0" href="http://blog.zenika.com/index.php?feed/atom">
+  
+  <link href="./Intégrer ElasticSearch dans une application Java - Zenika_files/css" rel="stylesheet" type="text/css">
+<style type="text/css" media="screen">
+@import url(themes/Zenika/style.css);
+</style>
+<style type="text/css" media="print">
+@import url(themes/Zenika/../default/print.css);
+</style>
+
+<script type="text/javascript" src="./Intégrer ElasticSearch dans une application Java - Zenika_files/jquery.js"></script>
+
+  
+  <script type="text/javascript" src="./Intégrer ElasticSearch dans une application Java - Zenika_files/post.js"></script>
+  <script type="text/javascript">
+	  //<![CDATA[
+	  var post_remember_str = 'Se souvenir de moi sur ce blog';
+	  //]]>
+  </script>
+<style type="text/css"></style></head>
+
+<body>
+<div id="body">
+<div id="page">
+
+
+	<!-- 
+	================================================================================
+									PAGE HEADER
+	================================================================================
+	-->
+	<div id="page_header">
+		<a href="http://blog.zenika.com/index.php?"><img id="header_bandeau" src="./Intégrer ElasticSearch dans une application Java - Zenika_files/bandeau.png"></a>
+<a href="http://www.zenika.com/"><img src="./Intégrer ElasticSearch dans une application Java - Zenika_files/zenika.gif"></a>
+	
+	</div>
+
+        <div id="page_body">
+
+		<!-- 
+		================================================================================
+										PAGE CONTENT
+		================================================================================
+		-->
+		<div id="page_content">
+  
+			<div id="p410" class="post">				
+				<div class="post-header">
+	<!-- Date -->
+	<div class="post-date">
+		<span class="post-date-day">29</span><br>
+		<span class="post-date-month">avr.</span><br>
+		<span class="post-date-year">2013</span>
+	</div>
+	<!-- Titre -->
+	<h2 class="post-title">						
+		<a href="./Intégrer ElasticSearch dans une application Java - Zenika_files/Intégrer ElasticSearch dans une application Java - Zenika.html">Intégrer ElasticSearch dans une application Java</a>
+	</h2>
+	<hr>
+	<!-- Méta-infos -->
+	<div class="post-infos-header">
+		<!-- Auteur -->
+		Posté par Gérald Quintana 
+		<!-- Catégorie -->
+					dans 
+							<a href="http://blog.zenika.com/index.php?category/Architecture">Architecture</a> › 
+						<a href="http://blog.zenika.com/index.php?category/Architecture/Cloud-et-Datagrids">Cloud et Datagrids</a>
+			<br>
+				<!-- Tags -->
+					Tags : 						
+			<a href="http://blog.zenika.com/index.php?tag/elasticsearch">elasticsearch, </a>		
+											
+			<a href="http://blog.zenika.com/index.php?tag/java">java</a>		
+			</div>		
+</div>
+					<div class="post-content"><p>Ca y est, c'est décidé, nous allons utiliser ElasticSearch comme moteur de recherche dans notre application Java. J'ai suivi la <a href="http://www.zenika.com/formation_elasticsearch.html" hreflang="fr">formation Zenika</a>, j'ai installé mon premier cluster ElasticSearch et fait quelques gammes avec cURL. Bref tout est prêt, il n'y a plus qu'à l'intégrer dans notre application Java.</p>
+
+
+<p>Cet article est issu d'un cas réel (aucun noeud ElasticSearch n'a été blessé durant le tournage), il présente les problématiques rencontrées et les solutions apportées.</p></div>
+    
+<div class="post-content"><h3>Accéder à ElasticSearch depuis le monde Java</h3>
+
+
+<p>Manipuler le moteur de recherche depuis la ligne de commande avec cURL comme décrit dans la documentation, c'était du gâteau. Pour faire la même chose depuis mon application Web, plusieurs solutions sont possibles.</p>
+
+
+<p>La solution la plus rapide, et peut-être la plus performante, est d'y accéder directement depuis le navigateur web, car invoquer l'API REST avec peu de JavaScript et d'Ajax est très simple. La seule difficulté serait de sécuriser le serveur ElasticSearch pour éviter qu'un vandale ne mette à mal notre cluster neuf et étincelant.</p>
+
+
+<p>Pour rassurer le responsable sécurité informatique qui est réticent à l'idée d'exposer ce nouveau produit à l'extérieur, ou bien parce que nous utilisons un framework Web server-side, nous allons plutôt attaquer ElasticSearch depuis notre serveur Java. Moyennant quelques librairies Java pour écrire un client JSON/REST, on pourrait attaquer l'API REST comme cURL ou n'importe quel navigateur. Mais ElasticSearch propose déjà une API Java pratique et productive, il y a juste deux bémols:</p>
+<ol>
+<li>Nous devrons introduire une dépendance entre notre application et ElasticSearch et embarquer le Jar adéquat</li>
+<li>La communication ne s'effectuera plus en HTTP mais dans le protocole natif d'ElasticSearch.</li>
+</ol>
+
+<p>Cette API Java d'ElasticSearch est du type fluent, elle est à la fois pratique et concise. Le fait d'avoir un typage fort plutôt que du JSON est très rassurant pour écrire ses premières requêtes sans se tromper. Cette API propose deux façons de se connecter aux serveurs ElasticSearch:</p>
+<ul>
+<li>Node Client: l'application devient elle même un noeud du cluster: elle gère elle-même une partie des données et délègue aux autres noeuds le reste du temps. Elle est capable de déterminer quel noeud possède telle donnée, ce qui permet d'optimiser l'accès aux données. Il est toutefois possible de faire en sorte que l'application soit un noeud sans données en désactivant l'option <code>node.data</code>.</li>
+<li>Transport Client: l'application est un client neutre du cluster, elle ne sait pas comment sont réparties les données.</li>
+</ul>
+
+<p>Les deux offrent au final la même interface Client pour accéder aux données:</p>
+
+
+<pre> // Node Client
+ Node node = NodeBuilder.nodeBuilder().node();
+ Client client = node.client();
+ 
+ // Transport Client
+ Client client = new TransportClient()
+   .addTransportAddress(new InetSocketTransportAddress("host1", 9300))
+   .addTransportAddress(new InetSocketTransportAddress("host2", 9300));</pre>
+
+
+<h3>Injection de dépendances</h3>
+
+
+<p>Accéder à un moteur de recherche, c'est au final comme accéder à une base de données: on écrit des données (indexer un document) et on lit des données (rechercher des documents). Le patron de conception DAO peut s'appliquer ici aussi, sauf qu'au lieu d'injecter une DataSource JDBC, ce sera un Client ElasticSearch.</p>
+
+
+<pre> @Repository
+ public class ContactDaoImpl implements ContactDao {
+   @Autowired
+   private Client client;</pre>
+
+
+
+<p>Pour que Spring injecte ce Client, il faut qu'il soit capable de l'instancier et de le configurer. L'API fluent d'ElasticSearch est très pratique pour établir cette connexion, mais elle n'est pas compatible avec l'approche POJO/JavaBean de Spring. Pour intégrer les deux, un peu de plomberie est donc nécessaire, sinon il existe des librairies comme <a href="https://github.com/dadoonet/spring-elasticsearch" hreflang="en">spring-elasticsearch</a> ou <a href="https://github.com/BioMedCentralLtd/spring-data-elasticsearch" hreflang="en">spring-data-elasticsearch</a>.</p>
+
+
+<p>Par injection de dépendances, on pourra aisément injecter un Node Client ou un Transport Client à nos DAO ElasticSearch sans que cela n'impacte notre code. Et on ne va pas s'en priver, on n'utilisera pas la même Client en fonction du besoin.</p>
+
+<ul>
+<li>Au run-time (la vraie vie de l'application): on utilisera le Transport Client pour se connecter au véritable cluster ElasticSearch.</li>
+<li>Au test-time (les tests automatisés): on utilisera le Node Client pour obtenir une version embarquée d'ElasticSearch que l'on pourra démarrer/arrêter à souhait. C'est un peu comme si on utilisait H2DB ou HSQLDB pour tester un DAO JDBC.</li>
+</ul>
+
+<p><img src="./Intégrer ElasticSearch dans une application Java - Zenika_files/elasticsearch-java-1.png" alt="Organisation du code" style="display:block; margin:0 auto;" title="Organisation du code"></p>
+
+
+<h3>Accès aux données</h3>
+
+
+<p>Faire une recherche dans ElasticSearch avec l'API fluent se résume à:</p>
+
+
+<pre>   public List&lt;Contact&gt; searchContacts(String query) throws IOException {
+       // Prépare la recherche
+       SearchRequestBuilder searchRequest=client.prepareSearch("contact")
+               .setTypes("simple")
+               .setQuery(queryString(query));
+       
+       // Execute la requête
+       SearchResponse searchResponse=searchRequest.execute().actionGet();
+       
+       // Extrait les résultats
+       SearchHit<a href=""></a> searchHits = searchResponse.getHits().getHits();
+       List&lt;Contact&gt; contacts=new ArrayList&lt;Contact&gt;(searchHits.length);
+       for(SearchHit searchHit:searchHits) {
+           Contact contact=objectMapper.readValue(searchHit.source(), Contact.class);
+           contacts.add(contact);
+       }
+       return contacts;
+   }</pre>
+
+
+<p>L'extraction des résultats, c'est à dire la conversion des SearchHits en objets Java n'est pas obligatoire. On s'appuie ici sur <a href="https://github.com/FasterXML/jackson-databind" hreflang="en">Jackson</a> pour automatiser la conversion du JSON en POJO, on aurait aussi bien pu manipuler directement l'arbre JSON:</p>
+
+<pre>           String nom=(String) searchHit.sourceAsMap().get("nom");</pre>
+
+
+<p>Si on utilise le système de <a href="http://www.elasticsearch.org/guide/reference/api/search/fields/" hreflang="en">fields</a>, c'est à dire qu'on sélectionne dans la requête les champs que l'on souhaite avoir dans la réponse (un peu comme une projection en SQL), la syntaxe différente est moins propice à l'utilisation d'un mapper Objet/JSON:</p>
+
+<pre>           String nom=searchHit.field("nom").value();</pre>
+
+
+<p>L'écriture est tout aussi simple que la lecture: Pour indexer quelque chose il faut d'abord en faire du JSON:</p>
+
+<pre>       public void indexContact(Contact contact) throws JsonProcessingException {
+           // Sérialise en JSON
+           String source=objectMapper.writeValueAsBytes(contact)
+           
+           // Prépare l'indexation
+           IndexRequestBuilder indexRequest=client.prepareIndex("contact", "simple")
+                   .setId(Integer.toString(contact.getId()))
+                   .setSource(source);
+           
+           // Exécute l'indexation
+           indexRequest
+                   .setRefresh(true)
+                   .execute().actionGet();        
+       }</pre>
+
+
+<p>Par défaut la mise à jour des index ne s'effectue pas immédiatement, il est donc probable que le document ne soit pas parmi les résultats de recherche dans les secondes qui suivent l'indexation. En ajoutant le <code>setRefresh(true)</code>, on attend que cette indexation soit réellement faite continuer: le temps de réponse s'en retrouve dégradé. Bref, il faut choisir en performance et cohérence.</p>
+
+
+<h3>Tests automatisés</h3>
+
+
+<p>Evidemment, tester est une nécessité, mais le fait qu'on utilise des concepts complexes comme les analyseurs, le scoring ou les recherches floues rend la chose encore plus vraie. Un petit changement sur un mapping peut avoir de grands effets sur les recherches.</p>
+
+
+<p>Heureusement ce n'est pas compliqué à tester, on procède comme pour une base de données:</p>
+
+<ol>
+<li>Démarrer un ElasticSearch embarqué,</li>
+<li>Supprimer les index,</li>
+<li>Créer un index et les mappings de types,</li>
+<li>Peupler l'index, c'est à dire indexer des documents,</li>
+<li>Tester le DAO,</li>
+<li>Retour à l'étape 2 ou 5,</li>
+<li>Arrêter ElasticSearch.</li>
+</ol>
+
+<p>Pour gérer le cycle de vie d'ElasticSearch (étapes 1 et 7), on va se servir de Spring et de spring-elasticsearch.</p>
+
+<pre> &lt;beans ... &gt;
+   &lt;es:node id="node" settingsFile="es-test.properties" /&gt;
+   &lt;es:client id="client" node="node" /&gt;
+   &lt;context:component-scan base-package="com.zenika.elasticsearch.dao"/&gt;
+ &lt;/beans&gt;</pre>
+
+
+<pre> @RunWith(SpringJUnit4ClassRunner.class)
+ @ContextConfiguration
+ public class ContactDaoImplTest {
+     @Autowired
+     private ContactDao contactDao;
+     @Autowired
+     private Client client;</pre>
+
+
+<p>Dans la configuration ElasticSearch, il vaut mieux activer l'option <code>node.local</code> pour éviter que des clusters ne se forment entre machines. On peut aussi désactiver le stockage des index sur disque avec <code>index.store.type=memory</code>:</p>
+
+<pre> cluster.name=test-cluster
+ node.name=test-node
+ node.local=true
+ index.store.type=memory
+ path.logs=target/es/log
+ path.data=target/es/data</pre>
+
+
+<p>En ce qui concerne les étapes 2 à 4, pour préparer les index et les données, on utilise <a href="https://github.com/tlrx/elasticsearch-test" hreflang="en">elasticsearch-test</a> qui est à ElasticSearch, ce que DBUnit est à JDBC:</p>
+
+<pre>   private EsSetup esSetup;
+   @Before
+   public void setUp() {
+       esSetup=new EsSetup(client);
+       esSetup.execute(
+           deleteAll(), // Etape 2
+           createIndex("contact") // 3
+               .withMapping("simple", fromClassPath("contact-simple.mapping.json"))
+               .withData(fromClassPath("contact-simple.bulk.json")) // Etape 4
+       );
+   }</pre>
+
+
+<p>Puis le test en lui même s'écrit naturellement:</p>
+
+<pre>   @Test
+   public void testSearchContacts() throws IOException {
+       List&lt;Contact&gt; contacts=contactDao.searchContacts("jean");       
+       assertEquals(1,contacts.size());
+       assertEquals("Jean-Claude",contacts.get(0).getPrenom());
+   }</pre>
+
+
+<p>Pour remplir les index à l'étape 4, elasticsearch-test utilise l'API <a href="http://www.elasticsearch.org/guide/reference/api/bulk/" hreflang="en">Bulk</a> qui est destinée à l'indexation de gros volumes de données. Le format de données Bulk est adapté au chargement en masse mais pas vraiment aux tests unitaires. Il est destiné à être consommé par une machine, les fichiers deviennent rapidement illisibles pour un humain pour deux raisons:</p>
+<ul>
+<li>Imposer l'alternance une ligne d'ordre/une ligne de données proscrit l'indentation du JSON, les commentaires...</li>
+<li>Un fichier bulk pris dans son ensemble ne forme pas un document JSON syntaxiquement correct: La vérification syntaxique des IDEs est rapidement déboussolée.</li>
+</ul>
+<pre> {"index": {"_index": "contact", "_type": "simple", "_id": "1" } }
+ {"id":1, "nom": "Dusse", "prenom": "Jean-Claude", "email": "jc@bronzes.fr<script type="text/javascript">
+/* <![CDATA[ */
+(function(){try{var s,a,i,j,r,c,l,b=document.getElementsByTagName("script");l=b[b.length-1].previousSibling;a=l.getAttribute('data-cfemail');if(a){s='';r=parseInt(a.substr(0,2),16);for(j=2;a.length-j;j+=2){c=parseInt(a.substr(j,2),16)^r;s+=String.fromCharCode(c);}s=document.createTextNode(s);l.parentNode.replaceChild(s,l);}}catch(e){}})();
+/* ]]> */
+</script>", "societe": "Bronzés"}
+ {"index": {"_index": "contact", "_type": "simple", "_id": "2" } }
+ {"id":2, "nom": "Morin", "prenom": "Bernard", "email": "bernard@bronzes.fr<script type="text/javascript">
+/* <![CDATA[ */
+(function(){try{var s,a,i,j,r,c,l,b=document.getElementsByTagName("script");l=b[b.length-1].previousSibling;a=l.getAttribute('data-cfemail');if(a){s='';r=parseInt(a.substr(0,2),16);for(j=2;a.length-j;j+=2){c=parseInt(a.substr(j,2),16)^r;s+=String.fromCharCode(c);}s=document.createTextNode(s);l.parentNode.replaceChild(s,l);}}catch(e){}})();
+/* ]]> */
+</script>", "societe": "Bronzés"}</pre>
+
+
+<p>Dans le contexte des tests, je pense qu'il faut se servir du format bulk uniquement comme d'un format intermédiaire, et le générer à partir d'objets Java ou d'un autre document JSON (<a href="https://gist.github.com/gquintana/20d761cf087c8e4d940b" hreflang="fr">façon XSLT/JSONT</a>).</p>
+
+
+<p>Pour tester l'indexation de documents, on procèdera de la mème manière que pour les recherches, mais il faudra se méfier du rafraîchissement des index (<code>setRefresh(true)</code>).</p>
+
+<pre> @Test
+ public void testIndexContact() throws IOException {
+   assertEquals(3, esSetup.count("contact").intValue());
+   contactDao.indexContact(new Contact(4,"Gisèle", "André","gigi@bronzes.fr<script type="text/javascript">
+/* <![CDATA[ */
+(function(){try{var s,a,i,j,r,c,l,b=document.getElementsByTagName("script");l=b[b.length-1].previousSibling;a=l.getAttribute('data-cfemail');if(a){s='';r=parseInt(a.substr(0,2),16);for(j=2;a.length-j;j+=2){c=parseInt(a.substr(j,2),16)^r;s+=String.fromCharCode(c);}s=document.createTextNode(s);l.parentNode.replaceChild(s,l);}}catch(e){}})();
+/* ]]> */
+</script>","Bronzés"));
+   assertEquals(4, esSetup.count("contact").intValue());
+ }</pre>
+
+
+<h3>Conclusion</h3>
+
+
+<p>Introduire ElasticSearch dans une application Java existante n'est pas sorcier. On retrouve les patterns et les outils (Spring, JUnit) que l'on a l'habitude de manipuler avec les bases de données relationnelles, et il n'y a guère plus de plomberie à mettre en place. Les choix qui ont été faits sont discutables et ne sont pas peut-être pas généralisables: c'est une approche possible parmi d'autres.</p></div>
+
+<script type="text/javascript">
+	tweetmeme_service = 'bit.ly';
+	tweetmeme_source = 'ZenikaIT';
+	tweetmeme_url = 'http://blog.zenika.com/index.php?post/2013/04/29/integrer-elasticsearch-dans-une-application-Java';
+	//tweetmeme_style = 'compact';
+</script>
+<script type="text/javascript" src="./Intégrer ElasticSearch dans une application Java - Zenika_files/button.js"></script>
+	
+			</div> 
+			
+			<hr>
+  
+			
+			
+			<div id="comments">
+			<h3>Commentaires</h3>
+			<dl>
+				<dt id="c5926" class=" odd first">
+			<a href="http://blog.zenika.com/index.php?post/2013/04/29/integrer-elasticsearch-dans-une-application-Java#c5926" class="comment-number">1.</a>
+			Le samedi 22 février 2014, 18:49			par <a href="http://www.oraaz.com/" rel="nofollow">mike</a>		</dt>      
+		<dd class=" odd first">
+			<p>Pour les tests junit :</p>
+
+
+<p>&lt; 1. Démarrer un ElasticSearch embarqué &gt;, c'est assez problèmatique de devoir démarrer une instance pour faire du test junit...en comparaison avec hsql pour les bases de données...</p>		</dd>
+					</dl>
+			</div>
+			
+			<p id="comments-feed">
+			<a class="feed" href="http://blog.zenika.com/index.php?feed/atom/comments/410" title="Fil Atom des commentaires de ce billet">
+				Fil des commentaires de ce billet			</a>
+		</p>
+		
+
+    
+	
+	
+	
+	
+	<form action="http://blog.zenika.com/index.php?post/2013/04/29/integrer-elasticsearch-dans-une-application-Java#pr" method="post" id="comment-form">
+				  
+		<h3>Ajouter un commentaire</h3>
+		<fieldset>
+
+			
+			<p class="field"><label for="c_name">Nom ou pseudo&nbsp;:</label>
+			<input name="c_name" id="c_name" type="text" size="30" maxlength="255" value="">
+			</p>
+
+			<p class="field"><label for="c_mail">Adresse email&nbsp;:</label>
+			<input name="c_mail" id="c_mail" type="text" size="30" maxlength="255" value="">
+			</p>
+
+			<p class="field"><label for="c_site">Site web			(facultatif)&nbsp;:</label>
+			<input name="c_site" id="c_site" type="text" size="30" maxlength="255" value="">
+			</p>
+
+			<p style="display:none"><input name="f_mail" type="text" size="30" maxlength="255" value=""></p>
+
+			<p class="field"><label for="c_content">Commentaire&nbsp;:</label>
+			<textarea name="c_content" id="c_content" cols="35" rows="7"></textarea>
+			</p>
+			<p class="form-help">Le code HTML est affiché comme du texte et les adresses web sont automatiquement transformées.</p>
+
+					</fieldset>
+		  
+		<fieldset>
+			<p class="remember"><input type="checkbox" id="c_remember" name="c_remember"> <label for="c_remember">Se souvenir de moi sur ce blog</label></p><p class="buttons"><input type="submit" class="preview" name="preview" value="prévisualiser">
+			</p>
+		</fieldset>
+		
+	</form>				
+				  
+			  			
+  			
+  		</div>
+		<!-- End of page_content -->
+ 	
+ 		<!-- 
+		================================================================================
+										PAGE SIDEBAR
+		================================================================================
+		-->
+ 		<div id="page_sidebar">
+			<div id="blognav">
+	<div id="search"><h2><label for="q">Rechercher</label></h2><form action="http://blog.zenika.com/index.php?" method="get"><fieldset><p><input type="text" size="10" maxlength="255" id="q" name="q" value=""> <input type="submit" class="submit" value="ok"></p></fieldset></form></div><div class="partager2"><h2>Recommander</h2><div class="partager2_content"><a style="display : block;float : left;height : 16px;width : 16px;margin : 2px;padding : 0;background: transparent url(http://blog.zenika.com/index.php?pf=partager2/img/sprite_partager2.png) no-repeat 0 -131px;" href="http://del.icio.us/post?url=http://blog.zenika.com/index.php?post/2013/04/29/integrer-elasticsearch-dans-une-application-Java&title=Int%C3%A9grer+ElasticSearch+dans+une+application+Java" title="Del.icio.us"></a> <a style="display : block;float : left;height : 16px;width : 16px;margin : 2px;padding : 0;background: transparent url(http://blog.zenika.com/index.php?pf=partager2/img/sprite_partager2.png) no-repeat 0 -173px;" href="http://digg.com/submit?phase=2&url=http://blog.zenika.com/index.php?post/2013/04/29/integrer-elasticsearch-dans-une-application-Java&title=Int%C3%A9grer+ElasticSearch+dans+une+application+Java" title="Digg"></a> <a style="display : block;float : left;height : 16px;width : 16px;margin : 2px;padding : 0;background: transparent url(http://blog.zenika.com/index.php?pf=partager2/img/sprite_partager2.png) no-repeat 0 -656px;" href="http://www.facebook.com/share.php?u=http://blog.zenika.com/index.php?post/2013/04/29/integrer-elasticsearch-dans-une-application-Java" title="Facebook"></a> <a style="display : block;float : left;height : 16px;width : 16px;margin : 2px;padding : 0;background: transparent url(http://blog.zenika.com/index.php?pf=partager2/img/sprite_partager2.png) no-repeat 0 -677px;" href="http://twitthis.com/twit?url=http://blog.zenika.com/index.php?post/2013/04/29/integrer-elasticsearch-dans-une-application-Java&title=Int%C3%A9grer+ElasticSearch+dans+une+application+Java" title="Twitter"></a> <a style="display : block;float : left;height : 16px;width : 16px;margin : 2px;padding : 0;background: transparent url(http://blog.zenika.com/index.php?pf=partager2/img/sprite_partager2.png) no-repeat 0 -593px;" href="http://www.wikio.fr/vote?url=http://blog.zenika.com/index.php?post/2013/04/29/integrer-elasticsearch-dans-une-application-Java" title="Wikio"></a> </div><br style="clear : left;"><br></div><div class="selected"><h2>A la une / A venir</h2><ul> <li><a href="http://blog.zenika.com/index.php?post/2013/01/15/spring-mvc-test-framework">Introducing Spring MVC test framework</a></li>  <li><a href="http://blog.zenika.com/index.php?post/2013/01/30/Using-Tomcat-JDBC-connection-pool-in-a-standalone-environment">Using Tomcat JDBC connection pool in a standalone environment</a></li>  <li><a href="http://blog.zenika.com/index.php?post/2013/03/04/AngularJS-%3A-la-philosophie">AngularJS : la philosophie</a></li>  <li><a href="./Intégrer ElasticSearch dans une application Java - Zenika_files/Intégrer ElasticSearch dans une application Java - Zenika.html">Intégrer ElasticSearch dans une application Java</a></li>  <li><a href="http://blog.zenika.com/index.php?post/2013/07/31/Creating-a-Varnish-4-module">Creating a Varnish 4 module</a></li> </ul></div><div class="categories"><h2>Catégories</h2><ul><li><a href="http://blog.zenika.com/index.php?category/Annonces-Zenika">Annonces Zenika</a> <span>(36)</span></li><li><a href="http://blog.zenika.com/index.php?category/Architecture">Architecture</a> <span>(16)</span><ul><li class="category-current"><a href="http://blog.zenika.com/index.php?category/Architecture/Cloud-et-Datagrids">Cloud et Datagrids</a> <span>(20)</span></li></ul></li><li><a href="http://blog.zenika.com/index.php?category/D%C3%A9veloppement">Développement</a> <span>(82)</span><ul><li><a href="http://blog.zenika.com/index.php?category/D%C3%A9veloppement/Web-Mobile">Web et Mobile</a> <span>(37)</span></li><li><a href="http://blog.zenika.com/index.php?category/D%C3%A9veloppement/Autres-Langages">Autres Langages</a> <span>(5)</span></li></ul></li><li><a href="http://blog.zenika.com/index.php?category/Tests-et-Performance">Tests et Performance</a> <span>(7)</span></li><li><a href="http://blog.zenika.com/index.php?category/Usine-logicielle">Usine logicielle</a> <span>(29)</span></li><li><a href="http://blog.zenika.com/index.php?category/Reporting">Reporting</a> <span>(8)</span></li><li><a href="http://blog.zenika.com/index.php?category/Formations">Formations</a> <span>(9)</span></li><li><a href="http://blog.zenika.com/index.php?category/Ev%C3%A9nements">Evénements</a> <span>(127)</span></li><li><a href="http://blog.zenika.com/index.php?category/M%C3%A9thode-Agile">Méthode Agile</a> <span>(0)</span><ul><li><a href="http://blog.zenika.com/index.php?category/M%C3%A9thode-Agile/Scrum">Scrum</a> <span>(1)</span></li></ul></li></ul></div><div class="tags"><h2>Tags</h2><ul><li><a href="http://blog.zenika.com/index.php?tag/java" class="tag100">java</a> </li><li><a href="http://blog.zenika.com/index.php?tag/spring" class="tag90">spring</a> </li><li><a href="http://blog.zenika.com/index.php?tag/gradle" class="tag40">gradle</a> </li><li><a href="http://blog.zenika.com/index.php?tag/eclipse" class="tag40">eclipse</a> </li><li><a href="http://blog.zenika.com/index.php?tag/birt" class="tag30">birt</a> </li><li><a href="http://blog.zenika.com/index.php?tag/html5" class="tag30">html5</a> </li><li><a href="http://blog.zenika.com/index.php?tag/gwt" class="tag30">gwt</a> </li><li><a href="http://blog.zenika.com/index.php?tag/agile" class="tag30">agile</a> </li><li><a href="http://blog.zenika.com/index.php?tag/android" class="tag20">android</a> </li><li><a href="http://blog.zenika.com/index.php?tag/javascript" class="tag20">javascript</a> </li></ul><p><strong><a href="http://blog.zenika.com/index.php?tags">Tous les mot-clés</a></strong></p></div><div class="links"><h2>Formations</h2><ul><li><a href="http://www.zenika.com/formation_java_specialiste.php" title="La formation la plus avancée au monde, animée en Français">Java Specialist</a></li>
+<li><a href="http://www.zenika.com/formation_terracotta.php" title="La solution de clustering la plus avancée">Terracotta</a></li>
+<li><a href="http://www.zenika.com/formation_agile.php">Agile</a></li>
+<li><a href="http://www.zenika.com/formation_bpel.php">BPEL</a></li>
+<li><a href="http://www.zenika.com/formation_hudson.php">Hudson / Jenkins</a></li>
+<li><a href="http://www.zenika.com/formation_wicket.php">Wicket</a></li>
+<li><a href="http://zenika.com/Formation/notre-catalogue-formation.html">Toutes nos formations...</a></li>
+</ul>
+</div><div class="links"><h2>Blogs</h2><ul><li><a href="http://yeswicket.com/" title="Le premier blog francophone sur Wicket">Yes, Wicket !</a></li>
+<li><a href="http://thecodersbreakfast.net/" title="Java, conférences, opensource, quiz">The Coder's Breakfast</a></li>
+<li><a href="http://www.boissinot.net/" title="Maven, Hudson, intégration continue">Grégory Boissinot</a></li>
+<li><a href="http://blog.nayima.be/">Nayima</a></li>
+</ul>
+</div><div class="links"><h2>Partenaires</h2><ul><li><a href="http://www.actuate.com/home/index.asp">Actuate</a></li>
+<li><a href="http://www.ej-technologies.com/">ej-technologies</a></li>
+<li><a href="http://www.nayima.be/">Nayima</a></li>
+<li><a href="http://www.springsource.com/">SpringSource</a></li>
+<li><a href="http://www.terracotta.org/">Terracotta</a></li>
+</ul>
+</div><div id="topnav"><h2>Archives</h2><ul><li class="topnav-home"><a href="http://blog.zenika.com/index.php?">Accueil</a><span> - </span></li><li class="topnav-arch"><a href="http://blog.zenika.com/index.php?archive">Archives</a></li></ul></div></div>		  
+<div id="blogextra">
+	</div>
+		</div>
+ 		<!-- End of page_sidebar -->
+ 		
+ 	</div>
+ 	<!-- End of page_body -->
+
+ 	<!-- 
+	================================================================================
+									PAGE FOOTER
+	================================================================================
+	-->
+	<div id="page_footer">
+		<hr>
+<br>
+Copyright <a href="http://www.zenika.com/">Zenika</a>, tous droits réservés. | Icônes <a href="http://www.famfamfam.com/lab/icons/silk/">FamFamFam</a>
+<br>
+	
+	</div>
+
+</div> <!-- End of page -->
+</div> <!-- End body -->
+<script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script src="./Intégrer ElasticSearch dans une application Java - Zenika_files/ga.js" type="text/javascript"></script>
+<script type="text/javascript">
+try {
+	var pageTracker = _gat._getTracker("UA-1812827-7"); //UA-7297391-1
+	pageTracker._trackPageview();
+} catch(err) {}
+</script>
+
+
+</body></html>

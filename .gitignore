@@ -8,6 +8,9 @@
 .idea
 
 *.iml
+.project
+.classpath
+.settings
 
 
 logs
