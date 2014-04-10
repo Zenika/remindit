@@ -1,0 +1,6 @@
+it.remind.AppModuleFactoryMachine
+it.remind.repositories.ElasticSearchRepositoryFactoryMachine
+it.remind.rest.HelloResourceFactoryMachine
+it.remind.rest.HelloResourceRouterFactoryMachine
+it.remind.rest.SearchBookmarkFactoryMachine
+it.remind.rest.SearchBookmarkRouterFactoryMachine

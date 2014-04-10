@@ -1,16 +1,7 @@
 package it.remind.repositories;
 
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.transport.TransportClient;
-import org.elasticsearch.common.Base64;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import restx.factory.Component;
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
+import it.remind.domain.WebSite;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +10,20 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
+import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.Base64;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import restx.factory.Component;
 
 @Component
 public class ElasticSearchRepository {
@@ -28,7 +32,7 @@ public class ElasticSearchRepository {
 
     private final Client client;
 
-    public ElasticSearchRepository(Client client) {
+    public ElasticSearchRepository(final Client client) {
         this.client = client;
     }
 
@@ -39,40 +43,45 @@ public class ElasticSearchRepository {
         String content = readFile("src/main/resources/test.html", Charset.forName("UTF-8"));
         LOGGER.trace("content : {}", content);
 
-
         LOGGER.info("INDEX");
-        IndexResponse response = client.prepareIndex("blog", "site")
-                .setSource(jsonBuilder()
-                        .startObject()
-                            .field("file", Base64.encodeBytes(content.getBytes()))
-                        .endObject())
-                .execute()
-                .actionGet();
+        IndexResponse response = client
+                .prepareIndex("blog", "site")
+                .setSource(
+                        jsonBuilder().startObject().field("url", "http://elasticsearch.org").field("file", Base64.encodeBytes(content.getBytes())).endObject())
+                .execute().actionGet();
 
         LOGGER.info("SEARCH");
-        SearchResponse searchResponse = client.prepareSearch("blog")
-                .setTypes("site")
-                .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-                .setQuery(QueryBuilders.matchQuery("file", "ElasticSearch"))             // Query
-                .setFrom(0).setSize(60).setExplain(true)
-                .execute()
-                .actionGet();
-
+        SearchResponse searchResponse = client.prepareSearch("blog").setTypes("site").setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+                .setQuery(QueryBuilders.matchQuery("file", "ElasticSearch")) // Query
+                .setFrom(0).setSize(60).setExplain(true).execute().actionGet();
 
         LOGGER.info("response : {}", searchResponse);
 
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(final String[] args) throws IOException {
         Client client = new TransportClient().addTransportAddress(new InetSocketTransportAddress("localhost", 9300));
         ElasticSearchRepository elasticSearchRepository = new ElasticSearchRepository(client);
         elasticSearchRepository.index();
     }
 
-    static String readFile(String path, Charset encoding) throws IOException {
+    static String readFile(final String path, final Charset encoding) throws IOException {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
         return encoding.decode(ByteBuffer.wrap(encoded)).toString();
     }
 
+    public WebSite searchText(final String text) {
+        WebSite webSite = new WebSite();
+        SearchResponse searchResponse = client.prepareSearch("blog").setTypes("site").setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+                .setQuery(QueryBuilders.matchQuery("file", text)) // Query
+                .setFrom(0).setSize(60).setExplain(true).execute().actionGet();
+        LOGGER.debug("Getting {} results for the text {}", searchResponse.getHits().getTotalHits(), text);
+        SearchHit hit = searchResponse.getHits().getAt(0);
 
+        GetResponse getResponse = client.prepareGet("blog", "site", hit.getId()).execute().actionGet();
+        String url = (String) getResponse.getSource().get("url");
+        webSite.setUrl(url);
+
+        return webSite;
+    }
 }
