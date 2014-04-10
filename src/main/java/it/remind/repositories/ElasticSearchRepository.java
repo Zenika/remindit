@@ -37,17 +37,20 @@ public class ElasticSearchRepository {
     public ElasticSearchRepository(final Client client) {
         this.client = client;
     }
-
-    public void addUrlContentToIndex(final ContentIndex contentIndex) {
-        try {
-            IndexResponse response = client
-                    .prepareIndex("blog", "site")
-                    .setSource(
-                            jsonBuilder().startObject().field("file", contentIndex.getContent()).startObject("_meta").field("url", contentIndex.getUrl())
-                                    .endObject().endObject()).execute().actionGet();
-        } catch (ElasticsearchException | IOException e) {
-            throw new RuntimeException("Erreur lors de l'ajout d'un index", e);
-        }
+    
+    public void addUrlContentToIndex(ContentIndex contentIndex) {
+    	try {
+			IndexResponse response = client.prepareIndex("blog", "site")
+			        .setSource(jsonBuilder()
+			                .startObject()
+			                    .field("file", contentIndex.getContent())
+			                    .field("url",contentIndex.getUrl())
+			                .endObject())
+			        .execute()
+			        .actionGet();
+		} catch (ElasticsearchException | IOException e) {
+			throw new RuntimeException("Erreur lors de l'ajout d'un index",e);
+		}
     }
 
     public void index() throws IOException {

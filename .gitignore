@@ -23,4 +23,5 @@ data/elasticsearch
 .classpath
 .factorypath
 .project
-/target
+
+target/
