@@ -1,18 +1,28 @@
 package it.remind;
 
+import java.nio.file.Paths;
+
+import javax.inject.Named;
+
+import org.elasticsearch.client.Client;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
+
+import restx.factory.Module;
+import restx.factory.Provides;
+import restx.security.BCryptCredentialsStrategy;
+import restx.security.BasicPrincipalAuthenticator;
+import restx.security.CredentialsStrategy;
+import restx.security.FileBasedUserRepository;
+import restx.security.SecuritySettings;
+import restx.security.SignatureKey;
+import restx.security.StdBasicPrincipalAuthenticator;
+import restx.security.StdUser;
+import restx.security.StdUserService;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.node.Node;
-import restx.factory.Module;
-import restx.factory.Provides;
-import restx.security.*;
-
-import javax.inject.Named;
-import java.nio.file.Paths;
-
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
 @Module
 public class AppModule {
@@ -74,13 +84,13 @@ public class AppModule {
 
 
 
-    @Provides
-    public Node node() {
-        return nodeBuilder().node();
-    }
+//    @Provides
+//    public Node node() {
+//        return nodeBuilder().node();
+//    }
 
     @Provides
-    public Client client(Node node) {
-        return node.client();
+    public Client client() {
+        return new TransportClient().addTransportAddress(new InetSocketTransportAddress("localhost", 9300));
     }
 }

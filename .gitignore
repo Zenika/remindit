@@ -15,3 +15,8 @@ logs
 .vagrant
 
 data/elasticsearch
+/.apt_generated
+
+.classpath
+.factorypath
+.project
