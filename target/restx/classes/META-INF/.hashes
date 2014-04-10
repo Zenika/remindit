@@ -1,8 +1,0 @@
-src\main\java**it\remind\repositories\ElasticSearchRepository.java**437ff8b2ef316cc344d40282661bbddf**1397160714159
-src\main\java**it\remind\AppModule.java**e2f5a45a10e5413d0d0207da39f13069**1397160697072
-src\main\java**it\remind\domain\Message.java**b454414d109f7a22c9ad0e361ff65354**1397146193076
-src\main\java**it\remind\rest\HelloResource.java**baa86de961af2ca916c411552641af3d**1397146193087
-src\main\java**it\remind\Roles.java**6157330765f3399ca59b94c683b4eaf9**1397146193031
-src\main\java**it\remind\rest\SearchBookmark.java**f1254292c09b6a927cfb9c65dcb7c205**1397158609836
-src\main\java**it\remind\domain\WebSite.java**fab90298dfd75df37fc228617bf280ef**1397157363511
-src\main\java**it\remind\AppServer.java**3d694618ae42ab154ebbd137af1746f1**1397146193026
