@@ -34,5 +34,7 @@ public class IndexResource {
 		elasticSearchRepository.addUrlContentToIndex(index);
 		return "test";
 	}
+	
+
 
 }

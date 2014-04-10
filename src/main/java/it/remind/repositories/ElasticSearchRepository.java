@@ -41,7 +41,7 @@ public class ElasticSearchRepository {
 			        .setSource(jsonBuilder()
 			                .startObject()
 			                    .field("file", contentIndex.getContent())
-			                    .startObject("_meta").field("url",contentIndex.getUrl()).endObject()
+			                    .field("url",contentIndex.getUrl())
 			                .endObject())
 			        .execute()
 			        .actionGet();
