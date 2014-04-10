@@ -57,3 +57,7 @@ th {
 .spaced-table>tbody>tr>th, .spaced-table>tbody>tr>td {
 	padding-top: 9px;
 }
+
+#search-results {
+    margin-top: 10px;
+}

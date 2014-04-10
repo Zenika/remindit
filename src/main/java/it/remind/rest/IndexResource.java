@@ -16,25 +16,21 @@ import restx.security.RolesAllowed;
 @RestxResource
 public class IndexResource {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(IndexResource.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(IndexResource.class);
 
-	private final ElasticSearchRepository elasticSearchRepository;
+    private final ElasticSearchRepository elasticSearchRepository;
 
-	public IndexResource(ElasticSearchRepository elasticSearchRepository) {
-		super();
-		this.elasticSearchRepository = elasticSearchRepository;
-	}
+    public IndexResource(final ElasticSearchRepository elasticSearchRepository) {
+        this.elasticSearchRepository = elasticSearchRepository;
+    }
 
-	@PUT("/index")
-	@RolesAllowed(Roles.HELLO_ROLE)
-	public String indexUrl(ContentIndex index) {
-		LOGGER.debug(index.getUrl());
-		LOGGER.debug(index.getContent());
-		elasticSearchRepository.addUrlContentToIndex(index);
-		return "test";
-	}
-	
-
+    @PUT("/index")
+    @RolesAllowed(Roles.HELLO_ROLE)
+    public String indexUrl(final ContentIndex index) {
+        LOGGER.debug(index.getUrl());
+        LOGGER.debug(index.getContent());
+        elasticSearchRepository.addUrlContentToIndex(index);
+        return "test";
+    }
 
 }
