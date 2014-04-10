@@ -1,5 +1,16 @@
 package it.remind.repositories;
 
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
+import it.remind.domain.ContentIndex;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -10,16 +21,8 @@ import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import restx.factory.Component;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 @Component
 public class ElasticSearchRepository {
@@ -30,6 +33,21 @@ public class ElasticSearchRepository {
 
     public ElasticSearchRepository(Client client) {
         this.client = client;
+    }
+    
+    public void addUrlContentToIndex(ContentIndex contentIndex) {
+    	try {
+			IndexResponse response = client.prepareIndex("blog", "site")
+			        .setSource(jsonBuilder()
+			                .startObject()
+			                    .field("file", contentIndex.getContent())
+			                    .startObject("_meta").field("url",contentIndex.getUrl()).endObject()
+			                .endObject())
+			        .execute()
+			        .actionGet();
+		} catch (ElasticsearchException | IOException e) {
+			throw new RuntimeException("Erreur lors de l'ajout d'un index",e);
+		}
     }
 
     public void index() throws IOException {
