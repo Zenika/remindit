@@ -87,6 +87,7 @@ public class AppModule {
                         // this has a performance impact, if you know your users
                         // / credentials never change without a
                         // restart you can disable this to get better perfs
+
                         true), credentialsStrategy, defaultAdminPasswordHash), securitySettings);
     }
 

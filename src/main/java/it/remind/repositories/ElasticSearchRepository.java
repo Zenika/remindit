@@ -1,6 +1,7 @@
 package it.remind.repositories;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
+import it.remind.domain.ContentIndex;
 import it.remind.domain.WebSite;
 
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.elasticsearch.ElasticsearchException;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
@@ -34,6 +36,18 @@ public class ElasticSearchRepository {
 
     public ElasticSearchRepository(final Client client) {
         this.client = client;
+    }
+
+    public void addUrlContentToIndex(final ContentIndex contentIndex) {
+        try {
+            IndexResponse response = client
+                    .prepareIndex("blog", "site")
+                    .setSource(
+                            jsonBuilder().startObject().field("file", contentIndex.getContent()).startObject("_meta").field("url", contentIndex.getUrl())
+                                    .endObject().endObject()).execute().actionGet();
+        } catch (ElasticsearchException | IOException e) {
+            throw new RuntimeException("Erreur lors de l'ajout d'un index", e);
+        }
     }
 
     public void index() throws IOException {
