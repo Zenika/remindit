@@ -13,4 +13,25 @@ Controllers.controller('HomeController', function ($scope, $location, $http) {
     }
 });
 
+Controllers.controller('AuthController', function ($scope, $location, $http) {
+	$scope.email = '';
+	$scope.password1 = '';
+	$scope.password2 = '';
+	$scope.unmatchedPwd = false;
+
+	$scope.login = function () {
+
+	}
+
+	$scope.sinup = function () {
+		if($scope.password1 === $scope.password2){
+
+		}else{
+			$scope.unmatchedPwd = true;
+		}
+	}
+	
+});
+
+
 

@@ -10,9 +10,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box"
   config.vm.network "forwarded_port", guest: 9200, host: 9200
   config.vm.network "forwarded_port", guest: 9300, host: 9300
+  config.vm.network :forwarded_port, guest: 27017, host: 27017
+  config.vm.provision "shell", path: "mongodb.sh"
   config.vm.provision "shell", path: "elasticsearch.sh"
   config.vm.provider "virtualbox" do |v|
 	v.customize ["modifyvm", :id, "--name", "elasticsearch"] # name for VirtualBox GUI
+	v.customize ["modifyvm", :id, "--name", "mongodb"] # name for VirtualBox GUI
     end
 
 end
