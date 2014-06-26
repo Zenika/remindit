@@ -13,9 +13,14 @@ import restx.factory.Module;
 import restx.factory.Provides;
 import restx.mongo.MongoModule;
 import restx.security.*;
+import restx.security.CORSAuthorizer;
+import restx.security.StdCORSAuthorizer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicates;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import it.remind.domain.User;
 
@@ -28,10 +33,12 @@ public class AppModule {
     }
 
 
-    @Provides
-    public SignatureKey signatureKey() {
-        return new SignatureKey("bb5c926b-58cb-449d-a1b4-4026bd02cf20 remindit -5553057365981469587 remind-it".getBytes(Charsets.UTF_8));
-    }
+	@Provides
+	public SignatureKey signatureKey() {
+		return new SignatureKey(
+				"bb5c926b-58cb-449d-a1b4-4026bd02cf20 remindit -5553057365981469587 remind-it"
+						.getBytes(Charsets.UTF_8));
+	}
 
     public static final class Roles {
         // we don't use an enum here because roles in @RolesAllowed have to be constant strings
@@ -40,27 +47,38 @@ public class AppModule {
     }
 
 
-    @Provides
-    @Named("restx.admin.password")
-    public String restxAdminPassword() {
-        return "admin";
-    }
+	@Provides
+	@Named("restx.admin.password")
+	public String restxAdminPassword() {
+		return "admin";
+	}
 
-    @Provides
-    @Named("app.name")
-    public String appName() {
-        return "remindit";
-    }
+	@Provides
+	@Named("app.name")
+	public String appName() {
+		return "remindit";
+	}
 
     @Provides @Named(MongoModule.MONGO_DB_NAME)
     public String dbName() {
         return "remindit";
     }
 
-    @Provides
-    public CredentialsStrategy credentialsStrategy() {
-        return new BCryptCredentialsStrategy();
-    }
+	@Provides
+	public CredentialsStrategy credentialsStrategy() {
+		return new BCryptCredentialsStrategy();
+	}
+
+	@Provides
+	public CORSAuthorizer getApiDocsAuthorizer() {
+		return StdCORSAuthorizer.builder()
+				.setOriginMatcher(Predicates.<CharSequence> alwaysTrue())
+				.setPathMatcher(Predicates.<CharSequence> alwaysTrue())
+				.setAllowedMethods(ImmutableList.of("GET", "POST", "PUT"))
+				.setAllowedHeaders(ImmutableList.of("accept", "content-type"))
+				.setAllowCredentials(Optional.<Boolean> of(true)).build();
+	}
+
 
 
     @Provides

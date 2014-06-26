@@ -2414,26 +2414,39 @@
 })(jQuery)
 
 function getSelText() {
-    var selection = '';
-    if (window.getSelection) {
-        selection = window.getSelection();
-    } else if (document.getSelection) {
-        selection = document.getSelection();
-    } else if (document.selection) {
-        selection = document.selection.createRange().text;
+//    var selection = '';
+//    if (window.getSelection) {
+//        selection = window.getSelection();
+//    } else if (document.getSelection) {
+//        selection = document.getSelection();
+//    } else if (document.selection) {
+//        selection = document.selection.createRange().text;
+//    }
+//    if (selection.anchorNode) {
+//        range = document.createRange();
+//        range.setStart(selection.anchorNode, selection.anchorOffset);
+//        range.setEnd(selection.focusNode, selection.focusOffset);
+//        if (!range.commonAncestorContainer.innerHTML) {
+//            return   range.commonAncestorContainer.textContent;
+//        } else {
+//            return range.commonAncestorContainer.innerHTML;
+//        }
+//    }
+//    return;
+	var win = window, doc = win.document, body = doc.body, selection, range, bodyText;
+    if (body.createTextRange) {
+        return body.createTextRange().text;
+    } else if (win.getSelection) {
+        selection = win.getSelection();
+        range = doc.createRange();
+        range.selectNodeContents(body);
+        selection.addRange(range);
+        bodyText = selection.toString();
+        selection.removeAllRanges();
+        return bodyText;
     }
-    if (selection.anchorNode) {
-        range = document.createRange();
-        range.setStart(selection.anchorNode, selection.anchorOffset);
-        range.setEnd(selection.focusNode, selection.focusOffset);
-        if (!range.commonAncestorContainer.innerHTML) {
-            return   range.commonAncestorContainer.textContent;
-        } else {
-            return range.commonAncestorContainer.innerHTML;
-        }
-    }
-    return;
 }
+
 /*
  html2canvas 0.4.1 <http://html2canvas.hertzen.com>
  Copyright (c) 2013 Niklas von Hertzen
@@ -5328,15 +5341,24 @@ function getSelText() {
 window.myBookmarklet = function () {
     html2canvas(document.body, {
         onrendered:function (canvas) {
-            var data = getSelText();
-            if (!data || data == '') {
-                data = $('html')[0].outerHTML;
+            var pageContent = getSelText();
+            if (!pageContent) {
+            	console.log("pas de contenu");
+            	return;
             }
-            data = "{'result':{'url':'" + document.location.href + "', 'content':'" + $.base64.encode(data) + "','screenshot':'" + canvas.toDataURL() + "'}}";
+            console.log(pageContent);
+            var data = {
+            	url : document.location.href,
+            	content : $.base64.encode(pageContent.replace(/  /g,'')),
+            	screenshot : canvas.toDataURL()
+            };
+            
             $.ajax({
                 type:'POST',
-                url:'http://localhost:8080/index',
-                data:data
+                url:'http://localhost:8080/api/index',
+                data:JSON.stringify(data),
+                dataType : "json",
+                contentType : "application/json; charset=utf-8"
             });
         },
         width:300,
