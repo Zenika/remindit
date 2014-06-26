@@ -1,0 +1,24 @@
+title: Create user 20140626 232712
+given:
+  - time: 2014-06-26T23:27:12.138+02:00
+  - collection: users
+    data: |
+        { "name" : "Nicolas" , "email" : "toto@zenika.com" , "roles" : [ "ADMIN"] , "_id" : { "$oid" : "53ac84ba21e66c60e9339c2a"}}
+        { "name" : "Franck" , "email" : "franck@zenika.com" , "roles" : [ "ADMIN"] , "_id" : { "$oid" : "53ac894521e66c60e9339c2b"}}
+    sequence: 53ac903121e630af37bb52e3
+wts:
+  - when: |
+       POST users
+       Cookie: RestxSession-remindit={"_expires":"2014-07-26T23:27:12.138+02:00","principal":"admin","sessionKey":"91604b25-9a79-4bc1-b6ff-96c5c8cabc19"}; RestxSessionSignature-remindit=jSi9auzrOfJiJz2ib97yXwKuqpg=
+
+        {
+         "name": "toto",
+         "email": "toto@zenika.com"
+        }
+    then: |
+        {
+          "name" : "toto",
+          "email" : "toto@zenika.com",
+          "roles" : null,
+          "_id" : "53ac903121e630af37bb52e3"
+        }
