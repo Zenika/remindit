@@ -15,16 +15,22 @@ import restx.security.PermitAll;
 @PermitAll
 public class SearchBookmark {
 
-    private ElasticSearchRepository elasticSearchRepository;
+	private final ElasticSearchRepository elasticSearchRepository;
 
-    public SearchBookmark(final ElasticSearchRepository elasticSearchRepository) {
-        this.elasticSearchRepository = elasticSearchRepository;
-    }
+	public SearchBookmark(final ElasticSearchRepository elasticSearchRepository) {
+		this.elasticSearchRepository = elasticSearchRepository;
+	}
 
-    @GET("/search")
-    public List<WebSite> searchText(final String text) {
-        List<WebSite> sites = elasticSearchRepository.searchText(text);
-        return sites;
-    }
+	@GET("/search")
+	public List<WebSite> searchText(final String text) {
+		List<WebSite> sites = elasticSearchRepository.searchText(text);
+		return sites;
+	}
+
+	@GET("/screenshot/{resourceId}")
+	public String getScreenshot(final String resourceId) {
+		String image = elasticSearchRepository.getScreenshot(resourceId);
+		return image;
+	}
 
 }

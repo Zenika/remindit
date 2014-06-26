@@ -13,7 +13,7 @@
 	
 	<ul class="list-group" id="search-results">
 	<li class="list-group-item" ng-repeat="result in results">
-		<a ng-href="{{result.url}}">{{result.url}}</a>
+		<a ng-href="{{result.url}}" ng-mouseover="showScreenshot(3)">{{result.url}}</a>
 	</li>
 </ul>
 </div>

@@ -10,7 +10,13 @@ Controllers.controller('HomeController', function ($scope, $location, $http) {
     	$http({method:'GET', url:'/api/search', params:{'text' : $scope.search}, headers:{'Accept':'application/json'}}).success(function (data, status, headers, config) {
     		$scope.results = data;
     	});
-    }
+    };
+    
+    $scope.showScreenshot = function (resourceId) {
+    	$http({method:'GET', url:'/api/screenshot/'+resourceId, headers:{'Accept':'application/json'}}).success(function (data, status, headers, config) {
+    		console.log(data);
+    	});
+    };
 });
 
 
